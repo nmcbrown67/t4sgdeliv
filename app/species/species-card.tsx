@@ -39,7 +39,6 @@ export default function SpeciesCard({ species }: { species: Species }) {
       <div className="m-4 w-72 min-w-72 flex-none rounded border-2 p-3 shadow">
         <div className="mb-2">
           {" "}
-          {/* Add margin bottom to create space */}
           <Button
             className="w-full border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50"
             onClick={openEditDialog}

@@ -105,6 +105,8 @@ export default function EditSpeciesDialog({ species }: EditSpeciesDialogProps) {
       },
     ]);
 
+    // Make it read only and then edit when clicked
+
     // const EditSpeciesDialog: React.FC<EditSpeciesDialogProps> = ({ species }) => {
     //   const [isEditing, setIsEditing] = useState<boolean>(false);
 
