@@ -17,7 +17,7 @@ import { toast } from "@/components/ui/use-toast";
 import { createBrowserSupabaseClient } from "@/lib/client-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -105,177 +105,172 @@ export default function EditSpeciesDialog({ species }: EditSpeciesDialogProps) {
       },
     ]);
 
-    const EditSpeciesDialog: React.FC<EditSpeciesDialogProps> = ({ species }) => {
-      const [isEditing, setIsEditing] = useState<boolean>(false);
+    // const EditSpeciesDialog: React.FC<EditSpeciesDialogProps> = ({ species }) => {
+    //   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-      // Catch and report errors from Supabase and exit the onSubmit function with an early 'return' if an error occurred.
-      if (error) {
-        return toast({
-          title: "Something went wrong.",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
-
-      // Because Supabase errors were caught above, the remainder of the function will only execute upon a successful edit
-
-      // Reset form values to the default (empty) values.
-      // Practically, this line can be removed because router.refresh() also resets the form. However, we left it as a reminder that you should generally consider form "cleanup" after an add/edit operation.
-      form.reset(defaultValues);
-
-      setOpen(false);
-
-      // Refresh all server components in the current route. This helps display the newly created species because species are fetched in a server component, species/page.tsx.
-      // Refreshing that server component will display the new species from Supabase
-      router.refresh();
-
+    // Catch and report errors from Supabase and exit the onSubmit function with an early 'return' if an error occurred.
+    if (error) {
       return toast({
-        title: "New species added!",
-        description: "Successfully added " + input.scientific_name + ".",
+        title: "Something went wrong.",
+        description: error.message,
+        variant: "destructive",
       });
-    };
+    }
 
-    const handleCloseDialog = () => {
-      setOpen(false);
-    };
+    // Because Supabase errors were caught above, the remainder of the function will only execute upon a successful edit
 
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="secondary">
-            <Icons.add className="mr-3 h-5 w-5" />
-            Edit Species
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-h-screen overflow-y-auto sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>Edit Species</DialogTitle>
-            <DialogDescription>
-              Edit species here. Click &quot;Edit Species&quot; below when you&apos;re done.
-            </DialogDescription>
-          </DialogHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="grid w-full items-center gap-4">
-                <FormField
-                  control={form.control}
-                  name="scientific_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Scientific Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={(species as { scientific_name?: string })?.scientific_name}
-                          {...field}
-                          readOnly={!isEditing}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="common_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Common Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={(species as { common_name?: string })?.common_name ?? ""}
-                          value={field.value ?? ""}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="kingdom"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Kingdom</FormLabel>
-                      <Select onValueChange={(value) => field.onChange(kingdoms.parse(value))} value={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a kingdom" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            {kingdoms.options.map((kingdom, index) => (
-                              <SelectItem key={index} value={kingdom}>
-                                {kingdom}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="total_population"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Total Population</FormLabel>
-                      <FormControl>
-                        <Input placeholder={(species as { total_population?: num })?.total_population} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="image"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Image Url</FormLabel>
-                      <FormControl>
-                        <Input placeholder={(species as { image?: string })?.image ?? ""} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Input placeholder={(species as { description?: string })?.description ?? ""} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex">
-                  <Button type="submit" className="ml-1 mr-1 flex-auto" onClick={() => setIsEditing(true)}>
-                    Edit Species
-                  </Button>
-                  <DialogClose asChild>
-                    <Button
-                      type="button"
-                      className="ml-1 mr-1 flex-auto"
-                      variant="secondary"
-                      onClick={handleCloseDialog}
-                    >
-                      Cancel
-                    </Button>
-                  </DialogClose>
-                </div>
-              </div>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-    );
+    // Reset form values to the default (empty) values.
+    // Practically, this line can be removed because router.refresh() also resets the form. However, we left it as a reminder that you should generally consider form "cleanup" after an add/edit operation.
+    form.reset(defaultValues);
+
+    setOpen(false);
+
+    // Refresh all server components in the current route. This helps display the newly created species because species are fetched in a server component, species/page.tsx.
+    // Refreshing that server component will display the new species from Supabase
+    router.refresh();
+
+    return toast({
+      title: "New species added!",
+      description: "Successfully added " + input.scientific_name + ".",
+    });
   };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="secondary">
+          <Icons.add className="mr-3 h-5 w-5" />
+          Edit Species
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-screen overflow-y-auto sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>Edit Species</DialogTitle>
+          <DialogDescription>
+            Edit species here. Click &quot;Edit Species&quot; below when you&apos;re done.
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="grid w-full items-center gap-4">
+              <FormField
+                control={form.control}
+                name="scientific_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Scientific Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={(species as { scientific_name?: string })?.scientific_name}
+                        {...field}
+                        // readOnly={!isEditing}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="common_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Common Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={(species as { common_name?: string })?.common_name ?? ""}
+                        value={field.value ?? ""}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="kingdom"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kingdom</FormLabel>
+                    <Select onValueChange={(value) => field.onChange(kingdoms.parse(value))} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a kingdom" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          {kingdoms.options.map((kingdom, index) => (
+                            <SelectItem key={index} value={kingdom}>
+                              {kingdom}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="total_population"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total Population</FormLabel>
+                    <FormControl>
+                      <Input placeholder={(species as { total_population?: num })?.total_population} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image Url</FormLabel>
+                    <FormControl>
+                      <Input placeholder={(species as { image?: string })?.image ?? ""} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Input placeholder={(species as { description?: string })?.description ?? ""} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex">
+                <Button type="submit" className="ml-1 mr-1 flex-auto">
+                  {/* onClick={() => setIsEditing(true)}> */}
+                  Edit Species
+                </Button>
+                <DialogClose asChild>
+                  <Button type="button" className="ml-1 mr-1 flex-auto" variant="secondary" onClick={handleCloseDialog}>
+                    Cancel
+                  </Button>
+                </DialogClose>
+              </div>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
 }
