@@ -13,21 +13,61 @@ can cause errors with matching props and state in child components if the list o
 import { Button } from "@/components/ui/button";
 import type { Database } from "@/lib/schema";
 import Image from "next/image";
+import PropTypes from "prop-types";
+import { useState } from "react";
+import DetailedView from "./Detailed.View";
+import EditSpeciesDialog from "./EditSpeciesDialog";
+
 type Species = Database["public"]["Tables"]["species"]["Row"];
 
+// interface SpeciesCardProps {
+//   species: Species;
+// }
+
 export default function SpeciesCard({ species }: { species: Species }) {
+  const [showDetailedView, setShowDetailedView] = useState<boolean>(false);
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+
+  const openDetailedView = () => setShowDetailedView(true);
+  const closeDetailedView = () => setShowDetailedView(false);
+
+  const openEditDialog = () => setShowEditDialog(true);
+  const closeEditDialog = () => setShowEditDialog(false);
+
   return (
-    <div className="m-4 w-72 min-w-72 flex-none rounded border-2 p-3 shadow">
-      {species.image && (
-        <div className="relative h-40 w-full">
-          <Image src={species.image} alt={species.scientific_name} fill style={{ objectFit: "cover" }} />
+    <>
+      <div className="m-4 w-72 min-w-72 flex-none rounded border-2 p-3 shadow">
+        <div className="mb-2">
+          {" "}
+          {/* Add margin bottom to create space */}
+          <Button
+            className="w-full border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50"
+            onClick={openEditDialog}
+          >
+            Edit Species
+          </Button>
         </div>
-      )}
-      <h3 className="mt-3 text-2xl font-semibold">{species.scientific_name}</h3>
-      <h4 className="text-lg font-light italic">{species.common_name}</h4>
-      <p>{species.description ? species.description.slice(0, 150).trim() + "..." : ""}</p>
-      {/* Replace the button with the detailed view dialog. */}
-      <Button className="mt-3 w-full">Learn More</Button>
-    </div>
+
+        {species.image && (
+          <div className="relative h-40 w-full">
+            <Image src={species.image} alt={species.scientific_name} fill style={{ objectFit: "cover" }} />
+          </div>
+        )}
+        <h3 className="mt-3 text-2xl font-semibold">{species.scientific_name}</h3>
+        <h4 className="text-lg font-light italic">{species.common_name}</h4>
+        <p>{species.description ? species.description.slice(0, 150).trim() + "..." : ""}</p>
+
+        <Button className="mt-3 w-full" onClick={openDetailedView}>
+          Learn More
+        </Button>
+
+        {showDetailedView && <DetailedView species={species} onClose={closeDetailedView} />}
+        {showEditDialog && <EditSpeciesDialog species={species} onClose={closeEditDialog} />}
+      </div>
+    </>
   );
 }
+
+SpeciesCard.propTypes = {
+  species: PropTypes.object.isRequired,
+};
